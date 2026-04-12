@@ -9,7 +9,7 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $tasks = Task::orderBy('priority', 'desc')->latest()->get();
+        $tasks = Task::latest()->get();
         return view('tasks.index', compact('tasks'));
     }
 
@@ -29,5 +29,35 @@ class TaskController extends Controller
         Task::create($validated);
 
         return redirect()->route('tasks.index')->with('success', 'Task created successfully.');
+    }
+
+    public function show(Task $task)
+    {
+        return view('tasks.show', compact('task'));
+    }
+
+    public function edit(Task $task)
+    {
+        return view('tasks.edit', compact('task'));
+    }
+
+    public function update(Request $request, Task $task)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'priority' => 'required|integer|min:0|max:5',
+        ]);
+
+        $task->update($validated);
+
+        return redirect()->route('tasks.index')->with('success', 'Task updated successfully.');
+    }
+
+    public function destroy(Task $task)
+    {
+        $task->delete();
+
+        return redirect()->route('tasks.index')->with('success', 'Task deleted successfully.');
     }
 }

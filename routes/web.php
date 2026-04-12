@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Task;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\AiTaskController;
 
 Route::get('/', function () {
     $tasks = Task::latest()->get();
@@ -27,4 +29,6 @@ Route::get('/dashboard', function () {
     ]);
 });
 
-Route::resource('tasks', App\Http\Controllers\TaskController::class);
+Route::post('/ai/suggest-task', [AiTaskController::class, 'suggest'])->name('ai.suggest-task');
+
+Route::resource('tasks', TaskController::class);
